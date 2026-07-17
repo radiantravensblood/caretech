@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Care-Tech — by Viryn Systems</title>
+<meta name="description" content="A synthetic concept demonstration for consent-directed, between-session care technology.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root,
+  html[data-theme="day"]{
+    --ink:#1b2430;
+    --paper:#edefea;
+    --paper-2:#e3e6dd;
+    --surface:#ffffff;
+    --moss:#5f7d66;
+    --moss-deep:#3f5a47;
+    --moss-tint:rgba(95,125,102,.14);
+    --amber:#c98a3e;
+    --amber-tint:rgba(201,138,62,.18);
+    --amber-text:#704718;
+    --slate:#5b6570;
+    --line:#cbcfc3;
+    --button-text:#ffffff;
+    --shadow:0 24px 52px -22px rgba(27,36,48,.24);
+  }
+  html[data-theme="night"]{
+    --ink:#f1e9d8;
+    --paper:#0f1b2e;
+    --paper-2:#17243a;
+    --surface:#182746;
+    --moss:#8fb79a;
+    --moss-deep:#b7d6be;
+    --moss-tint:rgba(143,183,154,.14);
+    --amber:#e0ad6e;
+    --amber-tint:rgba(224,173,110,.16);
+    --amber-text:#f2c78f;
+    --slate:#aab6cc;
+    --line:#2b3a56;
+    --button-text:#111a29;
+    --shadow:0 24px 52px -22px rgba(0,0,0,.5);
+  }
+  html[data-theme="chocolate"]{
+    --ink:#f6eadf;
+    --paper:#251711;
+    --paper-2:#34231b;
+    --surface:#3d2a21;
+    --moss:#a8bb83;
+    --moss-deep:#d1dfa9;
+    --moss-tint:rgba(168,187,131,.15);
+    --amber:#e5a45d;
+    --amber-tint:rgba(229,164,93,.17);
+    --amber-text:#ffd1a0;
+    --slate:#ccb9ab;
+    --line:#5a4033;
+    --button-text:#2d1c15;
+    --shadow:0 24px 52px -22px rgba(0,0,0,.58);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--paper)}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased;
+    transition:background .2s ease,color .2s ease;
+  }
+  a{color:inherit}
+  button,a{font:inherit}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+  .synthetic-banner{
+    background:var(--ink);color:var(--paper);text-align:center;padding:7px 18px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.04em
+  }
+  nav{
+    max-width:1180px;margin:0 auto;padding:24px 32px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px
+  }
+  .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+  .brand-mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:22px;letter-spacing:-.01em}
+  .brand-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;color:var(--slate);letter-spacing:.04em}
+  .nav-links{display:flex;align-items:center;justify-content:center;gap:30px;font-size:13.5px;font-weight:500}
+  .nav-links a{text-decoration:none;color:var(--slate)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+  .theme-toggle{
+    display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;
+    background:var(--paper-2);color:var(--slate);padding:7px 11px;cursor:pointer;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px
+  }
+  .theme-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none}
+  .nav-cta,.btn-primary,.btn-secondary{
+    display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:600;
+    border-radius:4px;transition:transform .15s ease,background .15s ease,color .15s ease
+  }
+  .nav-cta{background:var(--ink);color:var(--paper);padding:10px 18px;font-size:13px}
+  .nav-cta:hover,.btn-primary:hover{background:var(--moss-deep);color:var(--button-text);transform:translateY(-1px)}
+  .hero{
+    max-width:1180px;margin:0 auto;padding:68px 32px 96px;
+    display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:64px;align-items:center
+  }
+  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+  .eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--moss)}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:54px;line-height:1.04;letter-spacing:-.018em;margin-bottom:24px}
+  h1 em{color:var(--moss-deep)}
+  .hero-sub{max-width:47ch;color:var(--slate);font-size:18px;line-height:1.62;margin-bottom:34px}
+  .hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .btn-primary{background:var(--ink);color:var(--paper);padding:14px 25px;font-size:14.5px}
+  .btn-secondary{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:13px 21px;font-size:14.5px}
+  .btn-secondary:hover{border-color:var(--moss);background:var(--moss-tint)}
+  .hero-note{margin-top:16px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .ledger{overflow:hidden;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow)}
+  .ledger-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;border-bottom:1px dashed var(--line);background:var(--paper-2)}
+  .ledger-title{color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
+  .ledger-status{border-radius:999px;background:var(--moss-tint);color:var(--moss-deep);padding:4px 9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;white-space:nowrap}
+  .ledger-body{padding:5px 0}
+  .ledger-row{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:13px;align-items:start;padding:14px 20px;border-bottom:1px dashed var(--line);font-size:13px}
+  .ledger-row:last-child{border-bottom:0}
+  .ledger-time{padding-top:1px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .ledger-copy strong{display:block;font-size:13px}
+  .ledger-copy span{display:block;margin-top:2px;color:var(--slate);font-size:11.5px;line-height:1.45}
+  .tag{border-radius:999px;padding:4px 8px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;white-space:nowrap}
+  .tag-granted{background:var(--moss-tint);color:var(--moss-deep)}
+  .tag-scoped{background:var(--amber-tint);color:var(--amber-text)}
+  .tag-withheld{background:var(--paper-2);color:var(--slate)}
+  .ledger-foot{padding:13px 20px;border-top:1px solid var(--line);background:var(--paper-2);color:var(--slate);font-size:11.5px;line-height:1.5}
+  .strip{padding:27px 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-2)}
+  .strip-inner{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px}
+  section{padding:92px 32px}
+  .section-inner{max-width:1180px;margin:0 auto}
+  .section-head{max-width:58ch;margin-bottom:52px}
+  .section-label{margin-bottom:14px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:37px;line-height:1.14;letter-spacing:-.012em}
+  .section-head p{margin-top:14px;color:var(--slate);font-size:16px;line-height:1.65}
+  .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:var(--line)}
+  .card{background:var(--surface);padding:30px}
+  .card-num{margin-bottom:16px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px}
+  .card h3{margin-bottom:10px;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:20px}
+  .card p{color:var(--slate);font-size:14px;line-height:1.63}
+  .consent-section{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .consent-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+  .consent-copy p{margin:18px 0;color:var(--slate);font-size:16px;line-height:1.7}
+  .consent-copy strong{color:var(--ink)}
+  .principle-list{display:flex;flex-direction:column;gap:17px;margin-top:28px}
+  .principle{display:flex;gap:13px;align-items:flex-start}
+  .principle-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:7px;flex:none}
+  .principle strong{display:block;font-size:14px;margin-bottom:3px}
+  .principle span{display:block;color:var(--slate);font-size:13px;line-height:1.5}
+  .visual-panel{border-radius:9px;background:var(--ink);color:var(--paper);padding:34px}
+  .visual-panel .ledger-title{color:color-mix(in srgb,var(--paper) 58%,transparent)}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid color-mix(in srgb,var(--paper) 12%,transparent);font-size:13.5px}
+  .toggle-row:last-child{border-bottom:0}
+  .toggle-row small{display:block;margin-top:3px;color:color-mix(in srgb,var(--paper) 62%,transparent);font-size:11.5px;line-height:1.45}
+  .switch{position:relative;width:38px;height:20px;border-radius:999px;flex:none;background:color-mix(in srgb,var(--paper) 18%,transparent)}
+  .switch.on{background:var(--moss)}
+  .switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--paper)}
+  .switch.on::after{transform:translateX(18px)}
+  .boundary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .boundary-card{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:22px}
+  .boundary-card code{display:inline-block;margin-bottom:12px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .boundary-card h3{font-family:'Fraunces',Georgia,serif;font-size:19px;font-weight:500;margin-bottom:8px}
+  .boundary-card p{color:var(--slate);font-size:13px;line-height:1.55}
+  .cta{display:flex;align-items:center;justify-content:space-between;gap:38px;flex-wrap:wrap;border-radius:11px;background:var(--ink);color:var(--paper);padding:58px 52px}
+  .cta h2{max-width:22ch;color:var(--paper)}
+  .cta p{max-width:48ch;margin-top:12px;color:color-mix(in srgb,var(--paper) 67%,transparent);font-size:14px;line-height:1.6}
+  .cta-actions{display:flex;gap:12px;flex-wrap:wrap}
+  .cta .btn-primary{background:var(--paper);color:var(--ink)}
+  .cta .btn-primary:hover{background:var(--moss);color:var(--button-text)}
+  .cta .btn-secondary{border-color:color-mix(in srgb,var(--paper) 30%,transparent);background:transparent;color:var(--paper)}
+  footer{max-width:1180px;margin:0 auto;padding:34px 32px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);color:var(--slate);font-size:12px}
+  footer a{text-decoration:none;border-bottom:1px dashed currentColor}
+
+  @media (max-width:980px){
+    nav{flex-wrap:wrap}
+    .nav-links{order:3;width:100%;justify-content:flex-start}
+    .hero{grid-template-columns:1fr;padding-top:44px}
+    .hero-copy{max-width:720px}
+    .consent-split{grid-template-columns:1fr}
+    .grid-3,.boundary-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:700px){
+    nav{padding:18px 20px}
+    .brand-sub,.nav-links{display:none}
+    .nav-actions{gap:8px}
+    .nav-cta{padding:9px 12px}
+    .hero{padding:46px 20px 72px;gap:42px}
+    h1{font-size:40px}
+    .hero-sub{font-size:16px}
+    section{padding:72px 20px}
+    .strip{padding:22px 20px}
+    .ledger-row{grid-template-columns:58px minmax(0,1fr)}
+    .ledger-row .tag{grid-column:2;justify-self:start}
+    .cta{padding:40px 28px;align-items:flex-start}
+  }
+  @media (max-width:480px){
+    .theme-label{display:none}
+    .hero-actions,.cta-actions{align-items:stretch;flex-direction:column}
+    .btn-primary,.btn-secondary{width:100%}
+    h1{font-size:36px}
+    h2{font-size:31px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="synthetic-banner">SYNTHETIC CONCEPT DEMONSTRATION · NO REAL PATIENT INFORMATION · NOT FOR CLINICAL USE</div>
+<nav aria-label="Primary navigation">
+  <a class="brand" href="index.html" aria-label="Care-Tech home">
+    <span class="brand-mark">Care-Tech</span>
+    <span class="brand-sub">BY VIRYN SYSTEMS</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#consent">Consent</a>
+    <a href="#boundaries">Boundaries</a>
+    <a href="#demo">Demo</a>
+  </div>
+  <div class="nav-actions">
+    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Change theme">
+      <span class="theme-dot" aria-hidden="true"></span>
+      <span class="theme-label" id="themeLabel">Theme: Day</span>
+    </button>
+    <a class="nav-cta" href="dashboard.html">Open demo</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Between-session companion · consent-directed by design</div>
+    <h1>What happens between sessions <em>shouldn’t</em> disappear.</h1>
+    <p class="hero-sub">Care-Tech explores a quieter kind of care infrastructure: a companion that helps people organize what happened, a ledger that makes every disclosure visible, and a clinician view bounded by active consent.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="dashboard.html">Open clinician dashboard</a>
+      <a class="btn-secondary" href="companion.html">Open companion preview</a>
+    </div>
+    <p class="hero-note">The companion preview is scripted and local. No model, backend, clinician, or emergency service is connected.</p>
+  </div>
+
+  <aside class="ledger" aria-label="Example synthetic consent ledger">
+    <div class="ledger-head">
+      <span class="ledger-title">Consent ledger · synthetic</span>
+      <span class="ledger-status">● Scope visible</span>
+    </div>
+    <div class="ledger-body">
+      <div class="ledger-row">
+        <span class="ledger-time">Mon 9:14a</span>
+        <div class="ledger-copy"><strong>Session summary shared</strong><span>Summary only · full transcript withheld</span></div>
+        <span class="tag tag-granted">granted</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-time">Mon 9:14a</span>
+        <div class="ledger-copy"><strong>Sleep and appetite notes shared</strong><span>Structured self-report only</span></div>
+        <span class="tag tag-scoped">scoped</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-time">Wed 6:40p</span>
+        <div class="ledger-copy"><strong>Journaling entry kept private</strong><span>Client marked “not for session”</span></div>
+        <span class="tag tag-withheld">withheld</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-time">Thu 8:02a</span>
+        <div class="ledger-copy"><strong>Authorized safety-plan excerpt surfaced</strong><span>Exact matched excerpt · surrounding transcript private</span></div>
+        <span class="tag tag-granted">plan scope</span>
+      </div>
+    </div>
+    <div class="ledger-foot">Every entry shows what moved, why it moved, who received it, and which active scope permitted the disclosure.</div>
+  </aside>
+</header>
+
+<div class="strip">
+  <div class="strip-inner">
+    <span>DAY-TO-DAY SHARING REQUIRES AN ACTIVE GRANT</span>
+    <span>SAFETY ACTIONS FOLLOW VERSIONED, JOINTLY AUTHORED RULES</span>
+    <span>MODEL OUTPUT IS LABELED, LIMITED, AND AUDITABLE</span>
+  </div>
+</div>
+
+<section id="how">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">How it works</div>
+      <h2>Three roles, one visible chain of authority.</h2>
+      <p>The person speaks. The companion helps organize. The consent engine determines what may move. The clinician interprets what arrives.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <div class="card-num">01 · PERSON</div>
+        <h3>Reflect between appointments</h3>
+        <p>A private place for a difficult night, a small win, a symptom timeline, or a question worth carrying into the next session.</p>
+      </article>
+      <article class="card">
+        <div class="card-num">02 · COMPANION</div>
+        <h3>Organize without diagnosing</h3>
+        <p>The system can propose themes and summaries, but must distinguish self-report, extracted text, and model inference.</p>
+      </article>
+      <article class="card">
+        <div class="card-num">03 · CLINICIAN</div>
+        <h3>Read only the authorized view</h3>
+        <p>The dashboard shows consent scope, provenance, limitations, and deliberate gaps—because absence can be a valid privacy choice.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="consent" class="consent-section">
+  <div class="section-inner consent-split">
+    <div class="consent-copy">
+      <div class="section-label">Consent, by design</div>
+      <h2>Nobody’s words move through an invisible door.</h2>
+      <p>Care-Tech is built around a narrow rule: <strong>ordinary care information reaches the clinician view only through an active, visible sharing scope.</strong> Jointly authored safety plans are separately versioned, reviewable, and explicit about triggers, recipients, and exact disclosure.</p>
+      <p>The Silicari companion layer must also disclose its own operating limits: what came from the person, what was extracted, what was generated, and what requires human judgment.</p>
+      <div class="principle-list">
+        <div class="principle"><span class="principle-dot" aria-hidden="true"></span><div><strong>Granular by default</strong><span>Topic, summary, transcript, and structured self-report can carry different scopes.</span></div></div>
+        <div class="principle"><span class="principle-dot" aria-hidden="true"></span><div><strong>Visible and expiring</strong><span>Every scope shows confirmation, review, version, and expiry metadata.</span></div></div>
+        <div class="principle"><span class="principle-dot" aria-hidden="true"></span><div><strong>Safety is governed, not improvised</strong><span>The model proposes a candidate match; deterministic policy logic applies the active plan.</span></div></div>
+      </div>
+    </div>
+
+    <div class="visual-panel" aria-label="Synthetic sharing controls preview">
+      <div class="ledger-head">
+        <span class="ledger-title">Sharing controls · Jamie R.</span>
+      </div>
+      <div>
+        <div class="toggle-row"><div>Session summaries<small>On · active until Aug 31</small></div><span class="switch on" aria-label="Session summaries on"></span></div>
+        <div class="toggle-row"><div>Full companion transcripts<small>Off · summaries only</small></div><span class="switch" aria-label="Full transcripts off"></span></div>
+        <div class="toggle-row"><div>Mood and theme tracking<small>On · inference labels visible</small></div><span class="switch on" aria-label="Mood and theme tracking on"></span></div>
+        <div class="toggle-row"><div>Safety-plan sharing<small>Plan v2.1 · review due Aug 15</small></div><span class="switch on" aria-label="Safety plan sharing on"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="boundaries">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-label">Trust boundaries</div>
+      <h2>The model is not the authority.</h2>
+      <p>A credible implementation separates conversational generation from consent enforcement and clinical decision-making.</p>
+    </div>
+    <div class="boundary-grid">
+      <article class="boundary-card"><code>MODEL</code><h3>Proposes</h3><p>Creates a reply, a summary candidate, labeled observations, and a possible safety-plan match with an evidence span.</p></article>
+      <article class="boundary-card"><code>CONSENT ENGINE</code><h3>Governs</h3><p>Checks scope, version, expiry, recipient, exact disclosure, and deterministic plan thresholds before anything may move.</p></article>
+      <article class="boundary-card"><code>HUMAN</code><h3>Determines</h3><p>Interprets meaning, makes clinical decisions, and remains accountable for care. The system never claims otherwise.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="section-inner">
+    <div class="cta">
+      <div>
+        <h2>Walk through both sides of the threshold.</h2>
+        <p>Open the clinician dashboard for a consent-led longitudinal view, or use the scripted companion preview to test private reflection, summary sharing, and a simulated safety-plan match.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn-primary" href="dashboard.html">Clinician dashboard →</a>
+        <a class="btn-secondary" href="companion.html">Companion preview →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Care-Tech · a Viryn Systems concept</span>
+  <span><a href="ARCHITECTURE.md">Implementation architecture</a> · synthetic data · no real patient information · not for clinical use</span>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+  const themes = ['day', 'night', 'chocolate'];
+  const names = { day: 'Day', night: 'Night', chocolate: 'Chocolate' };
+  const key = 'caretech-theme';
+  function readStorage(){try{return localStorage.getItem(key)}catch{return null}}
+  function writeStorage(value){try{localStorage.setItem(key,value)}catch{}}
+  const button = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+
+  function apply(theme) {
+    document.documentElement.dataset.theme = theme;
+    writeStorage(theme);
+    label.textContent = `Theme: ${names[theme]}`;
+    button.setAttribute('aria-label', `Change theme. Current theme: ${names[theme]}`);
+  }
+
+  button.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme || 'day';
+    const next = themes[(themes.indexOf(current) + 1) % themes.length];
+    apply(next);
+  });
+
+  const stored = readStorage();
+  apply(themes.includes(stored) ? stored : 'day');
+})();
+</script>
+</body>
+</html>

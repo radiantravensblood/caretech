@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Care-Tech Companion — Scripted Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root,
+  html[data-theme="day"]{
+    --ink:#1b2430;--paper:#edefea;--paper-2:#e3e6dd;--surface:#ffffff;--surface-2:#f7f8f4;
+    --moss:#5f7d66;--moss-deep:#3f5a47;--moss-tint:rgba(95,125,102,.14);
+    --amber:#c98a3e;--amber-tint:rgba(201,138,62,.16);--amber-text:#704718;
+    --slate:#5b6570;--line:#d3d6cb;--red:#b4543a;--red-tint:rgba(180,84,58,.12);
+    --button-text:#ffffff;--shadow:0 22px 55px rgba(27,36,48,.15)
+  }
+  html[data-theme="night"]{
+    --ink:#f1e9d8;--paper:#0f1b2e;--paper-2:#17243a;--surface:#182746;--surface-2:#1d2f52;
+    --moss:#8fb79a;--moss-deep:#b7d6be;--moss-tint:rgba(143,183,154,.14);
+    --amber:#e0ad6e;--amber-tint:rgba(224,173,110,.16);--amber-text:#f2c78f;
+    --slate:#aab6cc;--line:#2b3a56;--red:#d98a72;--red-tint:rgba(217,138,114,.14);
+    --button-text:#111a29;--shadow:0 22px 55px rgba(0,0,0,.28)
+  }
+  html[data-theme="chocolate"]{
+    --ink:#f6eadf;--paper:#251711;--paper-2:#34231b;--surface:#3d2a21;--surface-2:#493227;
+    --moss:#a8bb83;--moss-deep:#d1dfa9;--moss-tint:rgba(168,187,131,.15);
+    --amber:#e5a45d;--amber-tint:rgba(229,164,93,.17);--amber-text:#ffd1a0;
+    --slate:#ccb9ab;--line:#5a4033;--red:#e28d73;--red-tint:rgba(226,141,115,.14);
+    --button-text:#2d1c15;--shadow:0 22px 55px rgba(0,0,0,.33)
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--paper)}
+  body{min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+  button,input,a{font:inherit}
+  button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+  .shell{min-height:100vh;display:grid;grid-template-rows:auto auto 1fr}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .brand{display:flex;align-items:baseline;gap:9px;text-decoration:none}
+  .brand strong{font-family:'Fraunces',Georgia,serif;font-size:18px}
+  .brand span{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;color:var(--slate);letter-spacing:.04em}
+  .top-actions{display:flex;align-items:center;gap:12px}
+  .theme-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:var(--paper-2);color:var(--slate);padding:7px 11px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .theme-dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}
+  .back-link{color:var(--slate);text-decoration:none;border-bottom:1px dashed currentColor;font-size:12px}
+  .synthetic{background:var(--ink);color:var(--paper);padding:7px 14px;text-align:center;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.04em}
+  .workspace{width:min(1180px,100%);margin:0 auto;padding:28px 26px 44px;display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;min-height:0}
+  .chat-card{display:grid;grid-template-rows:auto minmax(420px,1fr) auto;min-height:680px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+  .chat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:19px 21px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+  .chat-head h1{font-family:'Fraunces',Georgia,serif;font-size:23px;font-weight:600}
+  .chat-head p{margin-top:4px;color:var(--slate);font-size:12px;line-height:1.5}
+  .privacy-chip{border-radius:999px;background:var(--moss-tint);color:var(--moss-deep);padding:5px 9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;white-space:nowrap}
+  .messages{overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+  .message{max-width:min(78%,620px);padding:12px 14px;border-radius:9px;font-size:13.5px;line-height:1.58}
+  .message.user{align-self:flex-end;background:var(--ink);color:var(--paper);border-bottom-right-radius:3px}
+  .message.companion{align-self:flex-start;background:var(--paper-2);color:var(--ink);border-bottom-left-radius:3px}
+  .message.system{align-self:center;max-width:88%;border:1px dashed var(--line);background:transparent;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;text-align:center}
+  .message .meta{display:block;margin-top:8px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px}
+  .message.user .meta{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+  .composer{padding:16px 18px;border-top:1px solid var(--line);background:var(--surface-2)}
+  .scenario-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .scenario-btn{border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--slate);padding:7px 10px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px}
+  .scenario-btn:hover{background:var(--moss-tint);color:var(--moss-deep)}
+  .input-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+  .input-row input{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);padding:12px 13px;font-size:13px}
+  .send-btn{border:0;border-radius:7px;background:var(--ink);color:var(--paper);padding:11px 18px;cursor:pointer;font-weight:600}
+  .send-btn:hover{background:var(--moss-deep);color:var(--button-text)}
+  .composer-note{margin-top:9px;color:var(--slate);font-size:10.5px;line-height:1.45}
+  .side{display:flex;flex-direction:column;gap:14px}
+  .panel{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:18px}
+  .panel h2{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--moss-deep);margin-bottom:12px}
+  .scope-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--paper-2)}
+  .scope-row:last-child{border-bottom:0}
+  .scope-row strong{display:block;font-size:12.5px}
+  .scope-row span{display:block;margin-top:3px;color:var(--slate);font-size:10.5px;line-height:1.45}
+  .switch{position:relative;width:34px;height:19px;border-radius:999px;background:var(--line);flex:none;margin-top:2px}
+  .switch.on{background:var(--moss)}
+  .switch::after{content:'';position:absolute;width:15px;height:15px;top:2px;left:2px;border-radius:50%;background:var(--surface)}
+  .switch.on::after{transform:translateX(15px)}
+  .summary-panel{display:none}
+  .summary-panel.visible{display:block}
+  .summary-text{padding:12px;border-radius:7px;background:var(--paper-2);font-size:12.5px;line-height:1.55}
+  .summary-basis{margin-top:9px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;line-height:1.5}
+  .share-actions{display:flex;gap:8px;margin-top:12px}
+  .share-btn,.keep-btn{flex:1;border-radius:6px;padding:9px 10px;cursor:pointer;font-size:11px;font-weight:600}
+  .share-btn{border:0;background:var(--moss);color:var(--button-text)}
+  .keep-btn{border:1px solid var(--line);background:transparent;color:var(--ink)}
+  .event-list{display:flex;flex-direction:column;gap:9px}
+  .event{border-left:3px solid var(--moss);padding:8px 10px;background:var(--paper-2);border-radius:0 5px 5px 0}
+  .event.safety{border-left-color:var(--red);background:var(--red-tint)}
+  .event strong{display:block;font-size:11.5px}
+  .event span{display:block;margin-top:2px;color:var(--slate);font-size:10px;line-height:1.4}
+  .plan-box{border:1px dashed var(--line);border-radius:7px;padding:12px;color:var(--slate);font-size:10.5px;line-height:1.5}
+  .plan-box strong{display:block;color:var(--ink);font-size:11px;margin-bottom:4px}
+  .architecture-link{color:var(--slate);text-decoration:none;border-bottom:1px dashed currentColor;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .status{min-height:1.4em;margin-top:9px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px}
+  @media(max-width:900px){.workspace{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.chat-card{min-height:620px}}
+  @media(max-width:650px){.topbar{padding:12px 15px}.brand span,.back-link{display:none}.workspace{padding:18px 14px 32px}.side{grid-template-columns:1fr}.chat-card{min-height:600px}.message{max-width:90%}.chat-head{flex-direction:column}.input-row{grid-template-columns:1fr}.send-btn{width:100%}.theme-label{display:none}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="index.html"><strong>Care-Tech</strong><span>COMPANION · SCRIPTED PREVIEW</span></a>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Change theme"><span class="theme-dot" aria-hidden="true"></span><span class="theme-label" id="themeLabel">Theme: Day</span></button>
+      <a class="back-link" href="index.html">← back to site</a>
+    </div>
+  </header>
+  <div class="synthetic">SCRIPTED LOCAL INTERACTION · NO MODEL OR BACKEND CONNECTED · NO REAL SAFETY ACTION OCCURS</div>
+
+  <main class="workspace">
+    <section class="chat-card" aria-label="Synthetic companion conversation">
+      <div class="chat-head">
+        <div><h1>Jamie’s companion</h1><p>Conversation remains private unless Jamie explicitly shares a summary or an active safety-plan rule permits a defined disclosure.</p></div>
+        <span class="privacy-chip" id="privacyChip">Private by default</span>
+      </div>
+      <div class="messages" id="messages" aria-live="polite"></div>
+      <div class="composer">
+        <div class="scenario-row" aria-label="Scripted demo scenarios">
+          <button class="scenario-btn" type="button" data-scenario="ordinary">Ordinary reflection</button>
+          <button class="scenario-btn" type="button" data-scenario="summary">Prepare a summary</button>
+          <button class="scenario-btn" type="button" data-scenario="safety">Safety-plan match</button>
+          <button class="scenario-btn" type="button" data-scenario="reset">Reset demo</button>
+        </div>
+        <div class="input-row">
+          <label for="chatInput" class="sr-only">Message</label>
+          <input id="chatInput" type="text" autocomplete="off" placeholder="Type a synthetic reflection…" maxlength="500">
+          <button class="send-btn" id="sendButton" type="button">Send</button>
+        </div>
+        <p class="composer-note">Free text receives a small scripted response. This is an interaction prototype, not a clinical or conversational AI service.</p>
+      </div>
+    </section>
+
+    <aside class="side" aria-label="Consent controls and demo ledger">
+      <section class="panel">
+        <h2>Current sharing scope</h2>
+        <div class="scope-row"><div><strong>Session summaries</strong><span>On · active until Aug 31</span></div><span class="switch on" aria-label="Session summaries on"></span></div>
+        <div class="scope-row"><div><strong>Full transcript</strong><span>Off · remains private</span></div><span class="switch" aria-label="Full transcript off"></span></div>
+        <div class="scope-row"><div><strong>Safety-plan sharing</strong><span>Plan v2.1 · exact excerpt only</span></div><span class="switch on" aria-label="Safety plan sharing on"></span></div>
+      </section>
+
+      <section class="panel summary-panel" id="summaryPanel">
+        <h2>Proposed session summary</h2>
+        <div class="summary-text" id="summaryText"></div>
+        <div class="summary-basis" id="summaryBasis"></div>
+        <div class="share-actions">
+          <button class="share-btn" id="shareSummary" type="button">Share summary</button>
+          <button class="keep-btn" id="keepPrivate" type="button">Keep private</button>
+        </div>
+        <div class="status" id="summaryStatus" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Local consent ledger</h2>
+        <div class="event-list" id="eventList"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Safety-plan boundary</h2>
+        <div class="plan-box"><strong>Rule #2 · synthetic demo</strong>One exact phrase match creates a candidate event. The policy layer may disclose only the authorized excerpt, rule ID, and timestamp. Surrounding transcript remains private. Human review is required.</div>
+      </section>
+
+      <a class="architecture-link" href="ARCHITECTURE.md">Read the real implementation architecture →</a>
+    </aside>
+  </main>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const themes = ['day','night','chocolate'];
+  const themeNames = {day:'Day',night:'Night',chocolate:'Chocolate'};
+  const key = 'caretech-theme';
+  function readStorage(){try{return localStorage.getItem(key)}catch{return null}}
+  function writeStorage(value){try{localStorage.setItem(key,value)}catch{}}
+  const messages = document.getElementById('messages');
+  const input = document.getElementById('chatInput');
+  const privacyChip = document.getElementById('privacyChip');
+  const summaryPanel = document.getElementById('summaryPanel');
+  const summaryText = document.getElementById('summaryText');
+  const summaryBasis = document.getElementById('summaryBasis');
+  const summaryStatus = document.getElementById('summaryStatus');
+  const eventList = document.getElementById('eventList');
+  let lastUserText = '';
+
+  function create(tag, className, text){
+    const el = document.createElement(tag);
+    if(className) el.className = className;
+    if(text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  function addMessage(role, text, meta){
+    const bubble = create('div', `message ${role}`, text);
+    if(meta) bubble.append(create('span','meta',meta));
+    messages.append(bubble);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function addEvent(title, detail, safety=false){
+    const event = create('div', `event${safety?' safety':''}`);
+    event.append(create('strong','',title),create('span','',detail));
+    eventList.prepend(event);
+  }
+
+  function setSummary(text,basis){
+    summaryText.textContent = text;
+    summaryBasis.textContent = basis;
+    summaryStatus.textContent = '';
+    summaryPanel.classList.add('visible');
+  }
+
+  function ordinaryScenario(){
+    const text = 'I had a tense call with my parent, but naming what I felt helped me pause before I answered.';
+    lastUserText = text;
+    addMessage('user',text,'Synthetic user entry · private');
+    addMessage('companion','That pause sounds important. What did naming the feeling change about the way you responded?','Scripted reflective response · no diagnosis');
+    addEvent('Private reflection recorded','No clinician disclosure created.');
+  }
+
+  function summaryScenario(){
+    if(!lastUserText) ordinaryScenario();
+    const text = 'Jamie described a tense call with a parent and said naming the feeling aloud helped create a pause before responding.';
+    setSummary(text,'Basis: explicit user statement + generated organization. No clinical conclusion.');
+    addMessage('system','A proposed summary is ready. It remains private until Jamie chooses Share summary.');
+    addEvent('Summary candidate created','Status: private · not visible in clinician dashboard.');
+  }
+
+  function safetyScenario(existingText){
+    const text = existingText || 'Sometimes I cannot shake the feeling it would be easier if I just—';
+    lastUserText = text;
+    if(!existingText) addMessage('user',text,'Synthetic user entry · active safety-plan scope applies');
+    addMessage('companion','I want to slow down and check something directly: are you in immediate danger right now? This demo cannot contact anyone, but your plan says this exact phrase should be surfaced for human review.','Scripted safety clarification · no diagnosis');
+    addMessage('system','SIMULATED PLAN EVENT: exact authorized excerpt + rule #2 + timestamp would be disclosed. Surrounding transcript remains private. No real person or service was contacted.');
+    addEvent('Safety-plan candidate matched','Rule #2 · simulated disclosure only · human review required.',true);
+    privacyChip.textContent = 'Plan-scoped excerpt simulated';
+    privacyChip.style.background = 'var(--red-tint)';
+    privacyChip.style.color = 'var(--red)';
+  }
+
+  function reset(){
+    messages.replaceChildren();
+    eventList.replaceChildren();
+    summaryPanel.classList.remove('visible');
+    summaryStatus.textContent='';
+    lastUserText='';
+    privacyChip.textContent='Private by default';
+    privacyChip.removeAttribute('style');
+    addMessage('companion','This is a scripted preview of the client-facing companion. Choose a scenario below or type a synthetic reflection.','Local demo · no model connected');
+    addEvent('Demo initialized','All conversation content is local to this page session.');
+  }
+
+  function respondToFreeText(){
+    const text = input.value.trim();
+    if(!text) return;
+    input.value='';
+    lastUserText=text;
+    addMessage('user',text,'Synthetic free-text entry · private');
+    const lower=text.toLowerCase();
+    if(lower.includes('easier if i just') || lower.includes('hurt myself') || lower.includes('not be here')){
+      safetyScenario(text);
+      return;
+    }
+    addMessage('companion','I hear the shape of that. What part of it feels most important to carry into your next conversation with a human professional?','Scripted fallback response · no diagnosis');
+    addEvent('Private reflection recorded','No summary or clinician disclosure created.');
+  }
+
+  document.querySelectorAll('[data-scenario]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const scenario=button.dataset.scenario;
+      if(scenario==='ordinary') ordinaryScenario();
+      if(scenario==='summary') summaryScenario();
+      if(scenario==='safety') safetyScenario();
+      if(scenario==='reset') reset();
+    });
+  });
+
+  document.getElementById('sendButton').addEventListener('click',respondToFreeText);
+  input.addEventListener('keydown',event=>{if(event.key==='Enter') respondToFreeText();});
+  document.getElementById('shareSummary').addEventListener('click',()=>{
+    summaryStatus.textContent='Shared in this local demo. A clinician dashboard entry would now be created under the active summaries scope.';
+    addEvent('Summary shared','Synthetic dashboard disclosure · summaries-only scope.');
+    addMessage('system','The proposed summary was marked shared under the active summaries-only scope. Full transcript remains private.');
+  });
+  document.getElementById('keepPrivate').addEventListener('click',()=>{
+    summaryStatus.textContent='Kept private. No clinician dashboard entry was created.';
+    addEvent('Summary withheld','Client chose not to share this candidate.');
+    addMessage('system','The proposed summary remains private.');
+  });
+
+  const themeButton=document.getElementById('themeToggle');
+  const themeLabel=document.getElementById('themeLabel');
+  function applyTheme(theme){
+    document.documentElement.dataset.theme=theme;
+    writeStorage(theme);
+    themeLabel.textContent=`Theme: ${themeNames[theme]}`;
+    themeButton.setAttribute('aria-label',`Change theme. Current theme: ${themeNames[theme]}`);
+  }
+  themeButton.addEventListener('click',()=>{
+    const current=document.documentElement.dataset.theme||'day';
+    applyTheme(themes[(themes.indexOf(current)+1)%themes.length]);
+  });
+  const stored=readStorage();
+  applyTheme(themes.includes(stored)?stored:'day');
+  reset();
+})();
+</script>
+</body>
+</html>

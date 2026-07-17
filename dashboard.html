@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Care-Tech Dashboard — Synthetic Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root,
+  html[data-theme="day"]{
+    --ink:#1b2430;
+    --paper:#edefea;
+    --paper-2:#e3e6dd;
+    --surface:#ffffff;
+    --surface-strong:#f8f9f5;
+    --moss:#5f7d66;
+    --moss-deep:#3f5a47;
+    --moss-tint:rgba(95,125,102,.14);
+    --amber:#c98a3e;
+    --amber-tint:rgba(201,138,62,.16);
+    --amber-text:#704718;
+    --slate:#5b6570;
+    --line:#d3d6cb;
+    --red:#b4543a;
+    --red-tint:rgba(180,84,58,.12);
+    --button-text:#ffffff;
+    --overlay:rgba(12,17,24,.52);
+    --shadow:0 22px 55px rgba(27,36,48,.16);
+  }
+  html[data-theme="night"]{
+    --ink:#f1e9d8;
+    --paper:#0f1b2e;
+    --paper-2:#17243a;
+    --surface:#182746;
+    --surface-strong:#1d2f52;
+    --moss:#8fb79a;
+    --moss-deep:#b7d6be;
+    --moss-tint:rgba(143,183,154,.14);
+    --amber:#e0ad6e;
+    --amber-tint:rgba(224,173,110,.16);
+    --amber-text:#f2c78f;
+    --slate:#aab6cc;
+    --line:#2b3a56;
+    --red:#d98a72;
+    --red-tint:rgba(217,138,114,.14);
+    --button-text:#111a29;
+    --overlay:rgba(0,0,0,.68);
+    --shadow:0 22px 55px rgba(0,0,0,.28);
+  }
+  html[data-theme="chocolate"]{
+    --ink:#f6eadf;
+    --paper:#251711;
+    --paper-2:#34231b;
+    --surface:#3d2a21;
+    --surface-strong:#493227;
+    --moss:#a8bb83;
+    --moss-deep:#d1dfa9;
+    --moss-tint:rgba(168,187,131,.15);
+    --amber:#e5a45d;
+    --amber-tint:rgba(229,164,93,.17);
+    --amber-text:#ffd1a0;
+    --slate:#ccb9ab;
+    --line:#5a4033;
+    --red:#e28d73;
+    --red-tint:rgba(226,141,115,.14);
+    --button-text:#2d1c15;
+    --overlay:rgba(17,8,4,.72);
+    --shadow:0 22px 55px rgba(0,0,0,.33);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--paper)}
+  body{
+    min-height:100vh;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition:background .2s ease,color .2s ease;
+  }
+  button,a{font:inherit}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+  .app{
+    display:grid;
+    grid-template-columns:260px minmax(0,1fr) 330px;
+    grid-template-rows:58px 28px minmax(0,1fr);
+    min-height:100vh;
+  }
+  .topbar{
+    grid-column:1/-1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:12px 22px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface);
+  }
+  .brand{display:flex;align-items:baseline;gap:9px;min-width:0}
+  .brand-mark{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:18px;white-space:nowrap}
+  .brand-sub{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;color:var(--slate);letter-spacing:.04em;white-space:nowrap}
+  .topbar-right{display:flex;align-items:center;justify-content:flex-end;gap:15px;min-width:0;color:var(--slate);font-size:13px}
+  .theme-toggle{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--line);border-radius:999px;
+    background:var(--paper-2);color:var(--slate);
+    padding:7px 11px;cursor:pointer;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+  }
+  .theme-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none}
+  .back-link{color:var(--slate);text-decoration:none;border-bottom:1px dashed currentColor;padding-bottom:1px;white-space:nowrap}
+  .therapist-chip{display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px}
+  .synthetic-banner{
+    grid-column:1/-1;
+    background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:6px 14px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.04em;
+  }
+  .sidebar{
+    background:var(--surface);border-right:1px solid var(--line);
+    overflow:auto;padding:18px 0;
+  }
+  .sidebar-label{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--slate);
+    padding:0 20px 10px;
+  }
+  .client-item{
+    width:100%;display:flex;align-items:center;gap:12px;
+    padding:12px 20px;border:0;border-left:3px solid transparent;
+    background:transparent;color:var(--ink);text-align:left;cursor:pointer;
+    transition:background .12s ease,border-color .12s ease;
+  }
+  .client-item:hover{background:var(--paper-2)}
+  .client-item.active{background:var(--moss-tint);border-left-color:var(--moss-deep)}
+  .client-avatar{
+    width:35px;height:35px;border-radius:50%;display:grid;place-items:center;
+    flex:none;background:var(--paper-2);color:var(--ink);
+    font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:14px;
+  }
+  .client-avatar.empty{background:transparent;border:1.5px dashed var(--line);color:var(--slate)}
+  .client-meta{min-width:0}
+  .client-meta strong{display:block;font-size:14px;font-weight:600}
+  .client-meta span{display:block;font-size:12px;color:var(--slate);margin-top:2px;white-space:normal}
+  .client-dot{width:7px;height:7px;border-radius:50%;margin-left:auto;flex:none;background:var(--line)}
+  .client-dot.recent{background:var(--moss)}
+  .client-dot.urgent{background:var(--red);box-shadow:0 0 0 3px var(--red-tint)}
+  .main{overflow:auto;padding:28px 34px 54px}
+  .main-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+  .client-title{font-family:'Fraunces',Georgia,serif;font-size:28px;font-weight:600;line-height:1.15}
+  .client-sub{margin-top:5px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;line-height:1.5}
+  .alert-banner{
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    margin-top:22px;padding:15px 17px;border:1px solid var(--red);border-radius:7px;background:var(--red-tint)
+  }
+  .alert-copy{font-size:13.5px;line-height:1.55}
+  .alert-copy strong{display:block;margin-bottom:2px;font-size:14.5px}
+  .alert-btn{
+    flex:none;border:0;border-radius:5px;background:var(--red);color:var(--button-text);
+    padding:10px 14px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;white-space:nowrap
+  }
+  .stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 31px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:15px 17px}
+  .stat-value{font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;overflow-wrap:anywhere}
+  .stat-label{margin-top:4px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;line-height:1.4}
+  .section-title{margin:28px 0 14px;color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .timeline{display:flex;flex-direction:column;gap:22px;margin-left:6px;padding-left:26px;border-left:2px solid var(--line)}
+  .timeline-item{position:relative}
+  .timeline-item::before{content:'';position:absolute;left:-32px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--surface);border:2.5px solid var(--moss-deep)}
+  .timeline-item.flag::before{border-color:var(--red)}
+  .timeline-card{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:18px 20px}
+  .timeline-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+  .timeline-date{color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px}
+  .flag-badge,.basis-badge,.joint-tag{
+    display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;line-height:1.3;text-transform:uppercase;letter-spacing:.02em
+  }
+  .flag-badge{background:var(--red-tint);color:var(--red)}
+  .basis-badge{background:var(--paper-2);color:var(--slate)}
+  .joint-tag{background:var(--amber-tint);color:var(--amber-text);vertical-align:middle;margin-left:5px}
+  .timeline-title{font-weight:600;font-size:15px;margin-bottom:6px;line-height:1.4}
+  .timeline-body{font-size:13.5px;color:var(--slate);line-height:1.62}
+  .tag-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .timeline-tag{border-radius:999px;background:var(--paper-2);color:var(--slate);padding:4px 9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px}
+  .why-toggle{margin-top:11px;border:0;background:transparent;color:var(--slate);padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .why-panel{margin-top:10px;padding:13px 14px;border-radius:6px;background:var(--paper-2)}
+  .why-panel[hidden]{display:none}
+  .why-row{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;padding:4px 0;font-size:12px;line-height:1.5}
+  .why-key{color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;text-transform:uppercase}
+  .empty-state{text-align:center;padding:80px 20px;color:var(--slate)}
+  .empty-glyph{width:52px;height:52px;margin:0 auto 18px;border-radius:50%;border:1.5px dashed var(--line);display:grid;place-items:center;font-family:'Fraunces',Georgia,serif;font-size:22px}
+  .empty-state h2{font-family:'Fraunces',Georgia,serif;color:var(--ink);font-size:20px;font-weight:600;margin-bottom:8px}
+  .empty-state p{max-width:40ch;margin:0 auto;font-size:13.5px;line-height:1.6}
+  .empty-hint{display:inline-block;margin-top:20px;border-radius:999px;background:var(--moss-tint);color:var(--moss-deep);padding:8px 14px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .panel{overflow:auto;background:var(--surface);border-left:1px solid var(--line);padding:22px 20px 42px}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .panel-title{color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+  .panel-status{border-radius:999px;background:var(--moss-tint);color:var(--moss-deep);padding:4px 9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px}
+  .panel-note{margin:10px 0 18px;color:var(--slate);font-size:12px;line-height:1.55}
+  .consent-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--paper-2)}
+  .consent-label{font-size:13px;font-weight:600}
+  .consent-scope{margin-top:3px;color:var(--slate);font-size:11.5px;line-height:1.45}
+  .read-only-switch{position:relative;width:36px;height:20px;flex:none;border:0;border-radius:999px;padding:0;margin-top:2px;opacity:1;cursor:default;background:var(--line)}
+  .read-only-switch.on{background:var(--moss)}
+  .read-only-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:transform .12s ease}
+  .read-only-switch.on::after{transform:translateX(16px)}
+  .consent-meta{margin-top:6px;color:var(--amber-text);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;line-height:1.45}
+  .ledger-list{margin-top:6px}
+  .ledger-item{display:grid;grid-template-columns:57px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px dashed var(--paper-2);font-size:12px}
+  .ledger-time{color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px}
+  .ledger-copy strong{display:block;font-size:12px;margin-bottom:2px}
+  .ledger-copy span{color:var(--slate);font-size:11.5px;line-height:1.45}
+  .locked-note{display:flex;gap:9px;align-items:flex-start;margin-top:20px;padding:13px 14px;border-radius:6px;background:var(--amber-tint);color:var(--amber-text);font-size:12px;line-height:1.5}
+  .architecture-link{display:inline-flex;margin-top:18px;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;text-decoration:none;border-bottom:1px dashed currentColor}
+
+  dialog{
+    width:min(680px,calc(100vw - 32px));max-height:min(82vh,760px);
+    margin:auto;border:1px solid var(--line);border-radius:10px;
+    background:var(--surface);color:var(--ink);box-shadow:var(--shadow);overflow:auto
+  }
+  dialog::backdrop{background:var(--overlay);backdrop-filter:blur(3px)}
+  .dialog-head{position:sticky;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:20px 22px;border-bottom:1px solid var(--line);background:var(--surface);z-index:1}
+  .dialog-eyebrow{color:var(--moss-deep);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
+  .dialog-title{margin-top:4px;font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600}
+  .dialog-close{border:1px solid var(--line);border-radius:999px;background:var(--paper-2);color:var(--ink);width:34px;height:34px;cursor:pointer;font-size:18px;line-height:1}
+  .dialog-body{padding:22px}
+  .plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:20px}
+  .plan-card{border:1px solid var(--line);border-radius:7px;padding:14px;background:var(--surface-strong)}
+  .plan-card span{display:block;color:var(--slate);font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;text-transform:uppercase}
+  .plan-card strong{display:block;margin-top:5px;font-size:13px;line-height:1.45}
+  .rule-list{display:flex;flex-direction:column;gap:12px}
+  .rule{border-left:3px solid var(--amber);padding:12px 14px;background:var(--paper-2);border-radius:0 6px 6px 0}
+  .rule strong{display:block;font-size:13px;margin-bottom:4px}
+  .rule p{color:var(--slate);font-size:12px;line-height:1.5}
+  .simulation-note{margin-top:18px;padding:12px 14px;border:1px dashed var(--line);border-radius:6px;color:var(--slate);font-size:11.5px;line-height:1.5}
+
+  @media (max-width:1060px){
+    .app{grid-template-columns:230px minmax(0,1fr) 300px}
+    .main{padding-left:26px;padding-right:26px}
+    .brand-sub{display:none}
+    .therapist-chip span{display:none}
+  }
+  @media (max-width:900px){
+    body{overflow:auto}
+    .app{grid-template-columns:1fr;grid-template-rows:auto auto auto auto auto;min-height:100vh}
+    .topbar{padding:12px 16px;flex-wrap:wrap}
+    .topbar-right{gap:10px}
+    .sidebar{display:flex;gap:8px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px}
+    .sidebar-label{display:none}
+    .client-item{min-width:220px;flex:none;border-left:0;border-bottom:3px solid transparent;border-radius:6px;padding:10px 12px}
+    .client-item.active{border-bottom-color:var(--moss-deep)}
+    .main{overflow:visible;padding:24px 20px 38px}
+    .panel{overflow:visible;border-left:0;border-top:1px solid var(--line);padding:22px 20px 36px}
+  }
+  @media (max-width:620px){
+    .back-link{display:none}
+    .stat-row{grid-template-columns:1fr}
+    .alert-banner{align-items:flex-start;flex-direction:column}
+    .alert-btn{width:100%}
+    .timeline{margin-left:3px;padding-left:20px}
+    .timeline-item::before{left:-26px}
+    .timeline-card{padding:16px}
+    .why-row{grid-template-columns:1fr;gap:2px}
+    .plan-grid{grid-template-columns:1fr}
+    .theme-toggle{padding:7px 9px}
+    .theme-label{max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand" aria-label="Care-Tech dashboard prototype">
+      <span class="brand-mark">Care-Tech</span>
+      <span class="brand-sub">DASHBOARD · PROTOTYPE</span>
+    </div>
+    <div class="topbar-right">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Change theme">
+        <span class="theme-dot" aria-hidden="true"></span>
+        <span class="theme-label" id="themeLabel">Theme: Day</span>
+      </button>
+      <a class="back-link" href="index.html">← back to site</a>
+      <div class="therapist-chip" aria-label="Signed in as Dr. Alvarez, licensed marriage and family therapist">
+        <span class="avatar" aria-hidden="true">DA</span>
+        <span>Dr. Alvarez, LMFT</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="synthetic-banner">SYNTHETIC DEMONSTRATION DATA · NO REAL PATIENT INFORMATION · NOT FOR CLINICAL USE</div>
+
+  <nav class="sidebar" aria-label="Synthetic client list" id="clientList"></nav>
+  <main class="main" id="mainContent" tabindex="-1"></main>
+  <aside class="panel" id="consentPanel" aria-label="Consent and privacy details"></aside>
+</div>
+
+<dialog id="safetyPlanDialog" aria-labelledby="safetyPlanTitle">
+  <div class="dialog-head">
+    <div>
+      <div class="dialog-eyebrow">Synthetic safety plan</div>
+      <h2 class="dialog-title" id="safetyPlanTitle">Maya K. · plan v3.2</h2>
+    </div>
+    <button class="dialog-close" type="button" id="closeDialog" aria-label="Close safety plan">×</button>
+  </div>
+  <div class="dialog-body" id="safetyPlanBody"></div>
+</dialog>
+
+<script>
+(() => {
+  'use strict';
+
+  const THEMES = ['day', 'night', 'chocolate'];
+  const THEME_NAMES = { day: 'Day', night: 'Night', chocolate: 'Chocolate' };
+  const STORAGE_KEY = 'caretech-theme';
+  function readStorage(){try{return localStorage.getItem(STORAGE_KEY)}catch{return null}}
+  function writeStorage(value){try{localStorage.setItem(STORAGE_KEY,value)}catch{}}
+
+  const clients = {
+    jamie: {
+      initials: 'JR',
+      name: 'Jamie R.',
+      sidebar: '4 companion sessions this week',
+      dot: 'recent',
+      sub: 'Client since Feb 2026 · Weekly sessions · Tue 3:00pm',
+      stats: [
+        { value: '4', label: 'Companion sessions' },
+        { value: '1', label: 'Safety-plan match' },
+        { value: '3 of 4', label: 'Summaries shared' }
+      ],
+      timeline: [
+        {
+          flag: true,
+          date: 'Thu 8:02a',
+          title: 'Safety-plan phrase matched — surfaced for human review',
+          body: 'A phrase from Jamie’s self-authored safety plan appeared during a check-in. The exact authorized excerpt and matching rule were shared; the surrounding transcript remained private. The system did not make a clinical determination.',
+          tags: [
+            { text: 'Safety-plan disclosure', basis: 'plan-authorized' },
+            { text: 'Pattern match', basis: 'extracted signal' }
+          ],
+          why: {
+            Source: 'Exact matched excerpt authorized by safety-plan rule #2; surrounding transcript withheld.',
+            Rule: 'Safety plan rule #2 — self-referential safety language.',
+            Type: 'Extracted span; not a diagnosis and not a generated clinical conclusion.',
+            Model: 'Care Companion v0.9 · Thu 8:02a.',
+            Limits: 'Pattern match only. Requires human review before clinical action.',
+            Recipient: 'Dr. Alvarez · disclosed under active plan v2.1.'
+          }
+        },
+        {
+          date: 'Wed 6:40p',
+          title: 'Reflected on a difficult call with a parent',
+          body: 'Jamie described a tense phone call and said that naming the feeling aloud helped before responding. The companion generated a proposed summary from that self-report.',
+          tags: [
+            { text: 'Self-reported: tense', basis: 'explicit user statement' },
+            { text: 'Theme: family', basis: 'model-organized' }
+          ],
+          why: {
+            Source: 'Session transcript, Wed 6:40p–6:58p.',
+            Rule: 'Summary generation under Jamie’s active summaries-only scope.',
+            Type: 'Generated summary of self-reported material.',
+            Model: 'Care Companion v0.9 · Wed 6:59p.',
+            Limits: 'Summary only. Full transcript not shared.',
+            Recipient: 'Dr. Alvarez · session summaries enabled.'
+          }
+        },
+        {
+          date: 'Tue 7:15p',
+          title: 'Short check-in, low engagement',
+          body: 'Jamie said the day was “fine, just tired.” The companion did not probe further, following Jamie’s preference for shorter weeknight check-ins.',
+          tags: [
+            { text: 'Self-reported: tired', basis: 'explicit user statement' },
+            { text: 'Preference honored', basis: 'client setting' }
+          ],
+          why: {
+            Source: 'Session transcript, Tue 7:15p–7:19p.',
+            Rule: 'Summary generation under Jamie’s active summaries-only scope.',
+            Type: 'Generated summary of explicit statements and preference metadata.',
+            Model: 'Care Companion v0.9 · Tue 7:20p.',
+            Limits: 'No mood inference beyond Jamie’s own words.',
+            Recipient: 'Dr. Alvarez · session summaries enabled.'
+          }
+        },
+        {
+          date: 'Mon 9:14a',
+          title: 'Named a recurring worry before family visits',
+          body: 'Jamie linked this weekend’s anxiety to anticipatory worry before family visits. The pattern label is shown as a model-organized theme, not as a diagnosis.',
+          tags: [
+            { text: 'Self-reported: anxious', basis: 'explicit user statement' },
+            { text: 'Possible pattern: anticipatory worry', basis: 'model inference · review needed' }
+          ],
+          why: {
+            Source: 'Session transcript, Mon 9:14a–9:41a.',
+            Rule: 'Summary generation under Jamie’s active summaries-only scope.',
+            Type: 'Generated summary with labeled model inference.',
+            Model: 'Care Companion v0.9 · Mon 9:42a.',
+            Limits: 'Possible pattern only; clinician determines relevance.',
+            Recipient: 'Dr. Alvarez · session summaries enabled.'
+          }
+        }
+      ],
+      consent: {
+        rows: [
+          { label: 'Session summaries', scope: 'Sent to Dr. Alvarez automatically', on: true, meta: 'Active until Aug 31 · confirmed Jul 12' },
+          { label: 'Full companion transcripts', scope: 'Off — summaries only', on: false, meta: 'Last reviewed Jul 12' },
+          { label: 'Mood & theme tracking', scope: 'Weekly; inference labels must remain visible', on: true, meta: 'Active until Aug 31 · confirmed Jul 12' },
+          { label: 'Safety-plan sharing', scope: 'Follows Jamie’s jointly authored plan v2.1', on: true, joint: true, meta: 'Review due Aug 15 · amendment available anytime' }
+        ],
+        ledger: [
+          { time: 'Thu 8:02a', title: 'Authorized excerpt disclosed', scope: 'Matched rule #2; surrounding transcript withheld' },
+          { time: 'Mon 9:14a', title: 'Session summary shared', scope: 'Shared under active summaries-only scope' },
+          { time: 'Mon 9:14a', title: 'Journaling entry withheld', scope: 'Jamie marked “not for session”' }
+        ]
+      }
+    },
+    maya: {
+      initials: 'MK',
+      name: 'Maya K.',
+      sidebar: 'Active safety-plan match',
+      dot: 'urgent',
+      sub: 'Client since Nov 2025 · Weekly sessions · Fri 11:00am',
+      alert: {
+        title: 'Synthetic safety-plan threshold met — last 6 hours',
+        body: 'Two scripted demo sessions matched conditions in Maya’s jointly authored plan. This prototype simulates the authorized workflow; it did not contact a real person or service.',
+        cta: 'View simulated plan'
+      },
+      stats: [
+        { value: '3', label: 'Companion sessions · 24h' },
+        { value: '2', label: 'Safety-plan matches' },
+        { value: 'Full scope', label: 'Transcript sharing active' }
+      ],
+      timeline: [
+        {
+          flag: true,
+          date: 'Today 5:52a',
+          title: 'Second threshold met — notification workflow simulated',
+          body: 'A second scripted match met the threshold Maya and Dr. Alvarez defined. The demo records that an on-call contact would be notified and that crisis-line information would be shown to Maya. No external notification occurred.',
+          tags: [
+            { text: 'Simulated disclosure', basis: 'plan-authorized demo' },
+            { text: 'Human decision required', basis: 'workflow boundary' }
+          ],
+          why: {
+            Source: 'Exact authorized excerpt under plan rule #1; surrounding transcript scope: full sharing active.',
+            Rule: 'Plan v3.2 · rule #1 combined with rule #3 within 6 hours.',
+            Type: 'Deterministic threshold evaluation over scripted demo data.',
+            Model: 'Care Companion v0.9 candidate output · app policy engine decision.',
+            Limits: 'No diagnosis. No real contact or emergency service was notified.',
+            Recipient: 'Simulated Dr. Alvarez + simulated on-call contact.'
+          }
+        },
+        {
+          flag: true,
+          date: 'Today 1:18a',
+          title: 'Early-warning phrase matched — surfaced for review',
+          body: 'The companion produced a candidate match for language on Maya’s early-warning list. The policy layer logged the exact rule and displayed it for human review.',
+          tags: [
+            { text: 'Early warning', basis: 'exact plan rule' },
+            { text: 'Pattern match', basis: 'extracted signal' }
+          ],
+          why: {
+            Source: 'Exact authorized excerpt under plan rule #3.',
+            Rule: 'Plan v3.2 · early-warning list.',
+            Type: 'Extracted span; not generated clinical judgment.',
+            Model: 'Care Companion v0.9 candidate output · Today 1:18a.',
+            Limits: 'Requires clinician interpretation.',
+            Recipient: 'Dr. Alvarez · simulated disclosure under active plan.'
+          }
+        },
+        {
+          date: 'Yesterday 7:30p',
+          title: 'Routine evening check-in',
+          body: 'Maya described a work deadline and a plan to call her sister. The summary reflects her own statements; no inferred mood label was added.',
+          tags: [
+            { text: 'Theme: work stress', basis: 'model-organized' },
+            { text: 'Plan: call sister', basis: 'explicit user statement' }
+          ],
+          why: {
+            Source: 'Session transcript, Yesterday 7:30p–7:44p.',
+            Rule: 'Summary generation under Maya’s active full-transcript scope.',
+            Type: 'Generated summary of explicit user statements.',
+            Model: 'Care Companion v0.9 · Yesterday 7:45p.',
+            Limits: 'No clinical conclusion.',
+            Recipient: 'Dr. Alvarez · full-transcript scope active.'
+          }
+        }
+      ],
+      consent: {
+        rows: [
+          { label: 'Session summaries', scope: 'Sent to Dr. Alvarez automatically', on: true, meta: 'Active until Aug 31 · confirmed Jul 08' },
+          { label: 'Full companion transcripts', scope: 'On — Maya opted into full sharing', on: true, meta: 'Active until Jul 31 · confirmed Jul 01' },
+          { label: 'Mood & theme tracking', scope: 'Daily during an active plan window', on: true, meta: 'Active until Jul 20 · confirmed Jul 14' },
+          { label: 'Safety-plan sharing', scope: 'Follows Maya’s jointly authored plan v3.2', on: true, joint: true, meta: 'Review due Jul 22 · amendment available anytime' }
+        ],
+        ledger: [
+          { time: '5:52a', title: 'Notification workflow simulated', scope: 'Threshold met under plan v3.2; no external action occurred' },
+          { time: '1:18a', title: 'Early-warning phrase matched', scope: 'Authorized excerpt surfaced under rule #3' },
+          { time: 'Jul 01', title: 'Full-transcript scope reconfirmed', scope: 'Client-initiated · expires Jul 31' }
+        ]
+      },
+      plan: {
+        version: 'v3.2',
+        status: 'Active · synthetic demo',
+        confirmed: 'Jul 14, 2026',
+        review: 'Jul 22, 2026',
+        expires: 'Aug 14, 2026',
+        recipients: 'Dr. Alvarez and named on-call contact',
+        disclosure: 'Exact matched excerpt, rule ID, timestamp, and session identifier. Surrounding text follows Maya’s current transcript-sharing scope.',
+        rules: [
+          { title: 'Rule #1 · direct safety language', text: 'One exact phrase match creates a candidate event for human review. It does not itself establish risk.' },
+          { title: 'Rule #3 · early-warning pattern', text: 'Two authorized signals within six hours satisfy the plan threshold and trigger the simulated notification workflow.' },
+          { title: 'Amendment and suspension', text: 'Maya may request changes or suspension at any time. Every change creates a new version and ledger entry.' }
+        ]
+      }
+    },
+    sam: {
+      initials: '+',
+      name: 'Sam T.',
+      sidebar: 'No sessions yet',
+      dot: '',
+      empty: true,
+      sub: 'Client since Jul 2026 · First session scheduled',
+      stats: [
+        { value: '0', label: 'Companion sessions' },
+        { value: '0', label: 'Safety-plan matches' },
+        { value: 'None', label: 'Active sharing scopes' }
+      ],
+      timeline: [],
+      consent: {
+        rows: [
+          { label: 'Session summaries', scope: 'No decision made yet', on: false, meta: 'Discuss at intake' },
+          { label: 'Full companion transcripts', scope: 'No decision made yet', on: false, meta: 'Discuss at intake' },
+          { label: 'Mood & theme tracking', scope: 'No decision made yet', on: false, meta: 'Discuss at intake' },
+          { label: 'Safety-plan sharing', scope: 'Set up together before activation', on: false, joint: true, meta: 'No plan on file' }
+        ],
+        ledger: []
+      }
+    }
+  };
+
+  const state = { selected: 'jamie' };
+  const $ = (selector, root = document) => root.querySelector(selector);
+
+  function node(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined && text !== null) element.textContent = text;
+    return element;
+  }
+
+  function append(parent, ...children) {
+    children.flat().forEach(child => {
+      if (child !== null && child !== undefined) parent.append(child);
+    });
+    return parent;
+  }
+
+  function loadTheme() {
+    const stored = readStorage();
+    return THEMES.includes(stored) ? stored : 'day';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    writeStorage(theme);
+    $('#themeLabel').textContent = `Theme: ${THEME_NAMES[theme]}`;
+    $('#themeToggle').setAttribute('aria-label', `Change theme. Current theme: ${THEME_NAMES[theme]}`);
+  }
+
+  function cycleTheme() {
+    const current = document.documentElement.dataset.theme || 'day';
+    const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+    applyTheme(next);
+  }
+
+  function renderSidebar() {
+    const nav = $('#clientList');
+    nav.replaceChildren();
+    nav.append(node('div', 'sidebar-label', 'Synthetic clients'));
+
+    Object.entries(clients).forEach(([id, client]) => {
+      const button = node('button', `client-item${state.selected === id ? ' active' : ''}`);
+      button.type = 'button';
+      button.dataset.client = id;
+      button.setAttribute('aria-current', state.selected === id ? 'page' : 'false');
+
+      const avatar = node('span', `client-avatar${client.empty ? ' empty' : ''}`, client.initials);
+      avatar.setAttribute('aria-hidden', 'true');
+      const meta = node('span', 'client-meta');
+      append(meta, node('strong', '', client.name), node('span', '', client.sidebar));
+      const dot = node('span', `client-dot ${client.dot || ''}`.trim());
+      dot.setAttribute('aria-hidden', 'true');
+      append(button, avatar, meta, dot);
+      button.addEventListener('click', () => selectClient(id));
+      nav.append(button);
+    });
+  }
+
+  function renderStats(stats) {
+    const row = node('section', 'stat-row');
+    row.setAttribute('aria-label', 'Client summary');
+    stats.forEach(stat => {
+      const card = node('div', 'stat');
+      append(card, node('div', 'stat-value', stat.value), node('div', 'stat-label', stat.label));
+      row.append(card);
+    });
+    return row;
+  }
+
+  function renderWhy(why, title) {
+    const wrapper = node('div');
+    const button = node('button', 'why-toggle', 'Why this appears ▾');
+    button.type = 'button';
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-label', `Show provenance for ${title}`);
+    const panel = node('div', 'why-panel');
+    panel.hidden = true;
+
+    Object.entries(why).forEach(([key, value]) => {
+      const row = node('div', 'why-row');
+      append(row, node('span', 'why-key', key), node('span', '', value));
+      panel.append(row);
+    });
+
+    button.addEventListener('click', () => {
+      const open = panel.hidden;
+      panel.hidden = !open;
+      button.setAttribute('aria-expanded', String(open));
+      button.textContent = open ? 'Hide provenance ▴' : 'Why this appears ▾';
+    });
+    append(wrapper, button, panel);
+    return wrapper;
+  }
+
+  function renderTimeline(items) {
+    if (!items.length) {
+      const empty = node('section', 'empty-state');
+      const glyph = node('div', 'empty-glyph', '＋');
+      glyph.setAttribute('aria-hidden', 'true');
+      append(
+        empty,
+        glyph,
+        node('h2', '', 'Nothing to show yet'),
+        node('p', '', 'This client has not started using the companion. Once they do—and explicitly choose a sharing scope—authorized material will appear here.'),
+        node('span', 'empty-hint', 'Empty by default is the point, not a bug')
+      );
+      return empty;
+    }
+
+    const wrapper = node('section');
+    wrapper.append(node('h2', 'section-title', 'This week, in order'));
+    const timeline = node('div', 'timeline');
+
+    items.forEach(item => {
+      const article = node('article', `timeline-item${item.flag ? ' flag' : ''}`);
+      const card = node('div', 'timeline-card');
+      const top = node('div', 'timeline-top');
+      top.append(node('span', 'timeline-date', item.date));
+      if (item.flag) top.append(node('span', 'flag-badge', 'Safety-plan match'));
+      append(card, top, node('h3', 'timeline-title', item.title), node('p', 'timeline-body', item.body));
+
+      if (item.tags?.length) {
+        const tags = node('div', 'tag-list');
+        item.tags.forEach(tag => {
+          const pill = node('span', 'timeline-tag', tag.text);
+          pill.title = `Basis: ${tag.basis}`;
+          pill.setAttribute('aria-label', `${tag.text}. Basis: ${tag.basis}`);
+          tags.append(pill);
+        });
+        card.append(tags);
+      }
+      if (item.why) card.append(renderWhy(item.why, item.title));
+      article.append(card);
+      timeline.append(article);
+    });
+
+    wrapper.append(timeline);
+    return wrapper;
+  }
+
+  function renderMain() {
+    const client = clients[state.selected];
+    const main = $('#mainContent');
+    main.replaceChildren();
+
+    const head = node('div', 'main-head');
+    const titleBlock = node('div');
+    append(titleBlock, node('h1', 'client-title', client.name), node('p', 'client-sub', client.sub));
+    head.append(titleBlock);
+    main.append(head);
+
+    if (client.alert) {
+      const alert = node('section', 'alert-banner');
+      alert.setAttribute('aria-label', 'Synthetic safety-plan status');
+      const copy = node('div', 'alert-copy');
+      append(copy, node('strong', '', client.alert.title), node('span', '', client.alert.body));
+      const button = node('button', 'alert-btn', client.alert.cta);
+      button.type = 'button';
+      button.addEventListener('click', () => openSafetyPlan(client));
+      append(alert, copy, button);
+      main.append(alert);
+    }
+
+    main.append(renderStats(client.stats), renderTimeline(client.timeline));
+  }
+
+  function renderConsent() {
+    const client = clients[state.selected];
+    const consent = client.consent;
+    const panel = $('#consentPanel');
+    panel.replaceChildren();
+
+    const head = node('div', 'panel-head');
+    append(head, node('h2', 'panel-title', 'Consent & privacy'), node('span', 'panel-status', 'Consent-first'));
+    panel.append(head);
+    panel.append(node('p', 'panel-note', `This is what ${client.name.split(' ')[0]} has agreed to share. Day-to-day scopes are client-controlled; safety-plan rules are jointly authored, versioned, and visible.`));
+
+    consent.rows.forEach(rowData => {
+      const row = node('div', 'consent-row');
+      const copy = node('div');
+      const label = node('div', 'consent-label', rowData.label);
+      if (rowData.joint) label.append(node('span', 'joint-tag', 'Jointly agreed'));
+      append(copy, label, node('div', 'consent-scope', rowData.scope), node('div', 'consent-meta', rowData.meta));
+      const control = node('button', `read-only-switch${rowData.on ? ' on' : ''}`);
+      control.type = 'button';
+      control.disabled = true;
+      control.setAttribute('role', 'switch');
+      control.setAttribute('aria-checked', String(rowData.on));
+      control.setAttribute('aria-label', `${rowData.label}: ${rowData.on ? 'on' : 'off'}, read only in clinician view`);
+      append(row, copy, control);
+      panel.append(row);
+    });
+
+    panel.append(node('h3', 'section-title', 'Consent ledger'));
+    if (consent.ledger.length) {
+      const list = node('div', 'ledger-list');
+      consent.ledger.forEach(item => {
+        const row = node('div', 'ledger-item');
+        const copy = node('div', 'ledger-copy');
+        append(copy, node('strong', '', item.title), node('span', '', item.scope));
+        append(row, node('div', 'ledger-time', item.time), copy);
+        list.append(row);
+      });
+      panel.append(list);
+    } else {
+      panel.append(node('p', 'panel-note', 'No entries yet. The ledger fills only as this client makes sharing choices or activates a jointly authored plan.'));
+    }
+
+    const note = node('div', 'locked-note');
+    append(note, node('span', '', '⚠'), node('span', '', 'Safety-plan rules are authored before activation. The model may propose a candidate match; deterministic policy logic decides whether the active plan permits a simulated disclosure. The human makes the clinical determination.'));
+    panel.append(note);
+
+    const link = node('a', 'architecture-link', 'Read the implementation architecture →');
+    link.href = 'ARCHITECTURE.md';
+    panel.append(link);
+  }
+
+  function openSafetyPlan(client) {
+    if (!client.plan) return;
+    const body = $('#safetyPlanBody');
+    body.replaceChildren();
+
+    const grid = node('div', 'plan-grid');
+    const fields = [
+      ['Status', client.plan.status],
+      ['Last confirmed', client.plan.confirmed],
+      ['Review due', client.plan.review],
+      ['Expires', client.plan.expires],
+      ['Recipients', client.plan.recipients],
+      ['Disclosure', client.plan.disclosure]
+    ];
+    fields.forEach(([label, value]) => {
+      const card = node('div', 'plan-card');
+      append(card, node('span', '', label), node('strong', '', value));
+      grid.append(card);
+    });
+    body.append(grid);
+
+    const rulesTitle = node('h3', 'section-title', 'Plan rules');
+    const rules = node('div', 'rule-list');
+    client.plan.rules.forEach(ruleData => {
+      const rule = node('article', 'rule');
+      append(rule, node('strong', '', ruleData.title), node('p', '', ruleData.text));
+      rules.append(rule);
+    });
+    append(body, rulesTitle, rules, node('p', 'simulation-note', 'Prototype boundary: this page uses scripted synthetic data and local browser state. It does not monitor a real person, contact a clinician, call a crisis line, or perform emergency escalation.'));
+
+    $('#safetyPlanTitle').textContent = `${client.name} · plan ${client.plan.version}`;
+    const dialog = $('#safetyPlanDialog');
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+  }
+
+  function closeDialog() {
+    const dialog = $('#safetyPlanDialog');
+    if (typeof dialog.close === 'function') dialog.close();
+    else dialog.removeAttribute('open');
+  }
+
+  function selectClient(id) {
+    if (!clients[id]) return;
+    state.selected = id;
+    renderSidebar();
+    renderMain();
+    renderConsent();
+    $('#mainContent').focus({ preventScroll: true });
+  }
+
+  $('#themeToggle').addEventListener('click', cycleTheme);
+  $('#closeDialog').addEventListener('click', closeDialog);
+  $('#safetyPlanDialog').addEventListener('click', event => {
+    if (event.target === $('#safetyPlanDialog')) closeDialog();
+  });
+
+  applyTheme(loadTheme());
+  renderSidebar();
+  renderMain();
+  renderConsent();
+})();
+</script>
+</body>
+</html>
